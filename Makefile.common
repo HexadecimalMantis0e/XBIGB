@@ -1,0 +1,11 @@
+OBJECTS=XBIGB.o
+EXE_NAME=XBIGB$(EXE_EXT)
+
+all: $(EXE_NAME)
+
+$(EXE_NAME): XBIGB.o
+
+XBIGB.o: XBIGB.c
+
+clean:
+	rm -f $(EXE_NAME) $(OBJECTS)
