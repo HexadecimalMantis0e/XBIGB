@@ -8,8 +8,8 @@ int main(int argc, char **argv)
     unsigned int dumpUC00;
     unsigned int dumpUC01;
     unsigned int dump00;
-    unsigned int dump01;
     unsigned int dumpUCmstr;
+    unsigned int dump01;
     unsigned int start;
     unsigned int zerofill1;
     unsigned int zerofill2;
@@ -44,9 +44,9 @@ int main(int argc, char **argv)
     fseek(f1, 0x80, SEEK_SET);
     fread(&dump00, sizeof(unsigned int), 1, f1);
     fseek(f1, 0x84, SEEK_SET);
-    fread(&dump01, sizeof(unsigned int), 1, f1);
-    fseek(f1, 0x88, SEEK_SET);
     fread(&dumpUCmstr, sizeof(unsigned int), 1, f1);
+    fseek(f1, 0x88, SEEK_SET);
+    fread(&dump01, sizeof(unsigned int), 1, f1);
 
     printf("Input first segment address\n");
     scanf("%x", &start);
@@ -78,6 +78,7 @@ int main(int argc, char **argv)
         return(4);
 
     }
+
     fread(buffer, 1, dump00, f1);
 
 
@@ -86,28 +87,14 @@ int main(int argc, char **argv)
     free(buffer);
     fclose(f2);
 
-    buffer = (char*) malloc (sizeof(char) *dump01);
-    if (buffer == NULL) {
-        printf("Copy failed at segment01!\n");
-        fclose(f1);
-        return(5);
-
-    }
-    fread(buffer, 1, dump01, f1);
-
-
-    f2 = fopen("dump01.bin","wb");
-    fwrite(buffer, 1, dump01, f2);
-    free(buffer);
-    fclose(f2);
-
     buffer = (char*) malloc (sizeof(char) *dumpUCmstr);
     if (buffer == NULL) {
         printf("Copy failed at segmentUCmstr!\n");
         fclose(f1);
-        return(6);
+        return(5);
 
     }
+
     fread(buffer, 1, dumpUCmstr, f1);
 
 
@@ -116,8 +103,24 @@ int main(int argc, char **argv)
     free(buffer);
     fclose(f2);
 
+    buffer = (char*) malloc (sizeof(char) *dump01);
+    if (buffer == NULL) {
+        printf("Copy failed at segment01!\n");
+        fclose(f1);
+        return(6);
+
+    }
+
+    fread(buffer, 1, dump01, f1);
+
+
+    f2 = fopen("dump01.bin","wb");
+    fwrite(buffer, 1, dump01, f2);
+    free(buffer);
+    fclose(f2);
+
     if (zerofill1 == 1) {
-        printf("Skipping 00\n");
+        printf("Skipping segmentUC00\n");
     }
 
     else {
@@ -148,7 +151,7 @@ int main(int argc, char **argv)
 
     }
     if (zerofill2 == 0) {
-        printf("Skipping 01\n");
+        printf("Skipping segmentUC01\n");
     }
 
     else {
