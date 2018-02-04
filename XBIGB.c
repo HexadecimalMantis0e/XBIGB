@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 
     if (argc != 2 ) {
         printf("Usage: XBIGB /path/to/file\n");
-        return(9);
+        return(1);
     }
 
     printf("Input first segment address\n");
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     if (f1 == NULL) {
         printf("Could not open BIGB archive!\n");
-        return(1);
+        return(2);
     }
 
     fseek(f1, 0x00, SEEK_SET);
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     if (buffer == NULL) {
         printf("Copy failed at segment00!\n");
         fclose(f1);
-        return(2);
+        return(4);
 
     }
     fread(buffer, 1, dump00, f1);
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     if (buffer == NULL) {
         printf("Copy failed at segment01!\n");
         fclose(f1);
-        return(4);
+        return(5);
 
     }
     fread(buffer, 1, dump01, f1);
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     if (buffer == NULL) {
         printf("Copy failed at segmentUCmstr!\n");
         fclose(f1);
-        return(5);
+        return(6);
 
     }
     fread(buffer, 1, dumpUCmstr, f1);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 
     if (dumpUC00 == 0x00000000 ) {
         printf("Missing segmentUC00 and segmentUC01, should be fine.");
-        return(8);
+        return(7);
     }
 
     else    {
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
         if (buffer == NULL) {
             printf("Copy failed at segmentUC00!\n");
             fclose(f1);
-            return(5);
+            return(8);
 
         }
 
@@ -133,7 +133,7 @@ fseek(f1, zerofill2, SEEK_SET);
 
     if (dumpUC01 == 0x0000000 ) {
         printf("Missing segmentUC01, should be fine.");
-        return(7);
+        return(9);
     }
 
     else    {
@@ -143,7 +143,7 @@ fseek(f1, zerofill2, SEEK_SET);
         if (buffer == NULL) {
             printf("Copy failed at segmentUC01!\n");
             fclose(f1);
-            return(6);
+            return(10);
 
         }
 
