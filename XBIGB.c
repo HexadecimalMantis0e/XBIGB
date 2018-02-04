@@ -22,15 +22,6 @@ int main(int argc, char **argv)
         return(1);
     }
 
-    printf("Input first segment address\n");
-    scanf("%x", &start);
-
-    printf("Input first uncompressed segment address\n");
-    scanf("%x", &zerofill1);
-
-    printf("Input second uncompressed segment address\n");
-    scanf("%x", &zerofill2);
-
     f1 = fopen(argv[1],"rb");
 
     if (f1 == NULL) {
@@ -56,6 +47,27 @@ int main(int argc, char **argv)
     fread(&dump01, sizeof(unsigned int), 1, f1);
     fseek(f1, 0x88, SEEK_SET);
     fread(&dumpUCmstr, sizeof(unsigned int), 1, f1);
+
+    printf("Input first segment address\n");
+    scanf("%x", &start);
+
+    if (dumpUC00 == 0x00000000 ) {
+        printf("Missing segmentUC00, should be fine\n");
+    }
+
+    else {
+        printf("Input first UC segment address (1 to skip)\n");
+        scanf("%x", &zerofill1);
+    }
+
+    if (dumpUC01 == 0x0000000 ) {
+        printf("Missing segmentUC01, should be fine\n");
+    }
+
+    else {
+        printf("Input second UC segment address (0 to skip)\n");
+        scanf("%x", &zerofill2);
+    }
 
     fseek(f1, start, SEEK_SET);
 
@@ -104,57 +116,65 @@ int main(int argc, char **argv)
     free(buffer);
     fclose(f2);
 
-    fseek(f1, zerofill1, SEEK_SET);
-
-    if (dumpUC00 == 0x00000000 ) {
-        printf("Missing segmentUC00 and segmentUC01, should be fine.");
-        return(7);
+    if (zerofill1 == 1) {
+        printf("Skipping 00\n");
     }
 
-    else    {
-        buffer = (char*) malloc (sizeof(char) *dumpUC00);
-        if (buffer == NULL) {
-            printf("Copy failed at segmentUC00!\n");
-            fclose(f1);
-            return(8);
+    else {
 
+        if (dumpUC00 == 0x00000000 ) {
+            printf("test0\n");
         }
 
-        fread(buffer, 1, dumpUC00, f1);
+        else {
+            fseek(f1, zerofill1, SEEK_SET);
+
+            buffer = (char*) malloc (sizeof(char) *dumpUC00);
+            if (buffer == NULL) {
+                printf("Copy failed at segmentUC00!\n");
+                fclose(f1);
+                return(7);
+
+            }
+
+            fread(buffer, 1, dumpUC00, f1);
 
 
-        f2 = fopen("dumpUC00.bin","wb");
-        fwrite(buffer, 1, dumpUC00, f2);
-        free(buffer);
-        fclose(f2);
-    }
-
-fseek(f1, zerofill2, SEEK_SET);
-
-    if (dumpUC01 == 0x0000000 ) {
-        printf("Missing segmentUC01, should be fine.");
-        return(9);
-    }
-
-    else    {
-
-
-        buffer = (char*) malloc (sizeof(char) *dumpUC01);
-        if (buffer == NULL) {
-            printf("Copy failed at segmentUC01!\n");
-            fclose(f1);
-            return(10);
-
+            f2 = fopen("dumpUC00.bin","wb");
+            fwrite(buffer, 1, dumpUC00, f2);
+            free(buffer);
+            fclose(f2);
         }
 
-        fread(buffer, 1, dumpUC01, f1);
-
-
-        f2 = fopen("dumpUC01.bin","wb");
-        fwrite(buffer, 1, dumpUC01, f2);
-        free(buffer);
-        fclose(f2);
+    }
+    if (zerofill2 == 0) {
+        printf("Skipping 01\n");
     }
 
+    else {
+
+        if (dumpUC01 == 0x00000000 ) {
+            printf("test1\n");
+        }
+        else {
+            fseek(f1, zerofill2, SEEK_SET);
+
+            buffer = (char*) malloc (sizeof(char) *dumpUC01);
+            if (buffer == NULL) {
+                printf("Copy failed at segmentUC01!\n");
+                fclose(f1);
+                return(8);
+
+            }
+
+            fread(buffer, 1, dumpUC01, f1);
+
+
+            f2 = fopen("dumpUC01.bin","wb");
+            fwrite(buffer, 1, dumpUC01, f2);
+            free(buffer);
+            fclose(f2);
+        }
+    }
     return(0);
 }
