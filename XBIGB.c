@@ -123,7 +123,7 @@ int main(int argc, char **argv)
     else {
 
         if (dumpUC00 == 0x00000000 ) {
-            printf("test0\n");
+            printf("SegmentUC00 not copied\n");
         }
 
         else {
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
     else {
 
         if (dumpUC01 == 0x00000000 ) {
-            printf("test1\n");
+            printf("SegmentUC01 not copied\n");
         }
         else {
             fseek(f1, zerofill2, SEEK_SET);
