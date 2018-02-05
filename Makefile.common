@@ -5,7 +5,7 @@ all: $(EXE_NAME)
 
 $(EXE_NAME): XBIGB.o
 
-XBIGB.o: XBIGB.c
+XBIGB.o: XBIGB.c stuff.h
 
 clean:
 	rm -f $(EXE_NAME) $(OBJECTS)
