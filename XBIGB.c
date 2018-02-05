@@ -1,19 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "stuff.h"
 
 int main(int argc, char **argv)
 {
-
-    unsigned int magic;
-    unsigned int dumpUC00;
-    unsigned int dumpUC01;
-    unsigned int dump00;
-    unsigned int dumpUCmstr;
-    unsigned int dump01;
-    unsigned int start;
-    unsigned int zerofill1;
-    unsigned int zerofill2;
-    char *buffer;
     FILE *f1;
     FILE *f2;
 
