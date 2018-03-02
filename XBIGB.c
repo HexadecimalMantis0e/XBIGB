@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
     else {
         printf("Input first UC segment address (1 to skip)\n");
-        scanf("%x", &zerofill1);
+        scanf("%x", &UCsegment1);
     }
 
     if (dumpUC01 == 0x0000000 ) {
@@ -55,8 +55,8 @@ int main(int argc, char **argv)
     }
 
     else {
-        printf("Input second UC segment address (0 to skip)\n");
-        scanf("%x", &zerofill2);
+        printf("Input second UC segment address (1 to skip)\n");
+        scanf("%x", &UCsegment2);
     }
 
     fseek(f1, start, SEEK_SET);
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
     free(buffer);
     fclose(f2);
 
-    if (zerofill1 == 1) {
+    if (UCsegment1 == 1) {
         printf("Skipping segmentUC00\n");
     }
 
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
         }
 
         else {
-            fseek(f1, zerofill1, SEEK_SET);
+            fseek(f1, UCsegment1, SEEK_SET);
 
             buffer = (char*) malloc (sizeof(char) *dumpUC00);
             if (buffer == NULL) {
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
         }
 
     }
-    if (zerofill2 == 0) {
+    if (UCsegment2 == 1) {
         printf("Skipping segmentUC01\n");
     }
 
@@ -150,7 +150,7 @@ int main(int argc, char **argv)
             printf("SegmentUC01 not copied\n");
         }
         else {
-            fseek(f1, zerofill2, SEEK_SET);
+            fseek(f1, UCsegment2, SEEK_SET);
 
             buffer = (char*) malloc (sizeof(char) *dumpUC01);
             if (buffer == NULL) {
@@ -169,5 +169,6 @@ int main(int argc, char **argv)
             fclose(f2);
         }
     }
+
     return(0);
 }

@@ -8,6 +8,6 @@ unsigned int dump00;
 unsigned int dumpUCmstr;
 unsigned int dump01;
 unsigned int start;
-unsigned int zerofill1;
-unsigned int zerofill2;
+unsigned int UCsegment1;
+unsigned int UCsegment2;
 char *buffer;
