@@ -2,6 +2,18 @@
 #include <stdlib.h>
 #include "stuff.h"
 
+void parsechunk(unsigned int chunk, char outfile[255]) {
+    printf("Dumping %s\n", outfile);
+    buffer = (char*) malloc (sizeof(char) *chunk);
+    fread(buffer, 1, chunk, f1);
+    f2 = fopen(outfile,"wb");
+    fwrite(buffer, 1, chunk, f2);
+    free(buffer);
+    fclose(f2);
+
+
+}
+
 int main(int argc, char **argv)
 {
 
@@ -14,19 +26,19 @@ int main(int argc, char **argv)
 
     if (f1 == NULL) {
         printf("Could not open BIGB archive!\n");
-        return(2);
+        return(1);
     }
 
     fread(&magic, sizeof(unsigned int), 1, f1);
 
     if (magic != 0x42474942 ) {
         printf("Missing BIGB header!\n");
-        return(3);
+        return(1);
     }
 
     fread(&start, sizeof(unsigned int), 1, f1);
 
-    start2 = start + 0x0C;
+    start += 0x0C;
 
     fseek(f1, 0x78, SEEK_SET);
     fread(&dumpUC00, sizeof(unsigned int), 1, f1);
@@ -39,52 +51,12 @@ int main(int argc, char **argv)
     fseek(f1, 0x88, SEEK_SET);
     fread(&dump02, sizeof(unsigned int), 1, f1);
 
-    fseek(f1, start2, SEEK_SET);
+    fseek(f1, start, SEEK_SET);
 
-    buffer = (char*) malloc (sizeof(char) *dump00);
-    if (buffer == NULL) {
-        printf("Copy failed at segment00!\n");
-        fclose(f1);
-        return(4);
+    parsechunk(dump00,"dump00.bin");
+    parsechunk(dump01,"dump01.bin");
+    parsechunk(dump02,"dump02.bin");
 
-    }
-
-    fread(buffer, 1, dump00, f1);
-
-    f2 = fopen("dump00.bin","wb");
-    fwrite(buffer, 1, dump00, f2);
-    free(buffer);
-    fclose(f2);
-
-    buffer = (char*) malloc (sizeof(char) *dump01);
-    if (buffer == NULL) {
-        printf("Copy failed at segment01!\n");
-        fclose(f1);
-        return(5);
-
-    }
-
-    fread(buffer, 1, dump01, f1);
-
-    f2 = fopen("dump01.bin","wb");
-    fwrite(buffer, 1, dump01, f2);
-    free(buffer);
-    fclose(f2);
-
-    buffer = (char*) malloc (sizeof(char) *dump02);
-    if (buffer == NULL) {
-        printf("Copy failed at segment02!\n");
-        fclose(f1);
-        return(6);
-
-    }
-
-    fread(buffer, 1, dump02, f1);
-
-    f2 = fopen("dump02.bin","wb");
-    fwrite(buffer, 1, dump02, f2);
-    free(buffer);
-    fclose(f2);
 
     if (dumpUC00 != 0x00) {
 
@@ -96,21 +68,7 @@ int main(int argc, char **argv)
         }
 
         fseek(f1, -0x01, SEEK_CUR);
-
-        buffer = (char*) malloc (sizeof(char) *dumpUC00);
-        if (buffer == NULL) {
-            printf("Copy failed at segmentUC00!\n");
-            fclose(f1);
-            return(6);
-
-        }
-
-        fread(buffer, 1, dumpUC00, f1);
-
-        f2 = fopen("dumpUC00.bin","wb");
-        fwrite(buffer, 1, dumpUC00, f2);
-        free(buffer);
-        fclose(f2);
+        parsechunk(dumpUC00,"dumpUC00.bin");
 
     }
 
@@ -124,21 +82,7 @@ int main(int argc, char **argv)
         }
 
         fseek(f1, -0x01, SEEK_CUR);
-
-        buffer = (char*) malloc (sizeof(char) *dumpUC01);
-        if (buffer == NULL) {
-            printf("Copy failed at segmentUC01!\n");
-            fclose(f1);
-            return(7);
-
-        }
-
-        fread(buffer, 1, dumpUC01, f1);
-
-        f2 = fopen("dumpUC01.bin","wb");
-        fwrite(buffer, 1, dumpUC01, f2);
-        free(buffer);
-        fclose(f2);
+        parsechunk(dumpUC01,"dumpUC01.bin");
     }
     return(0);
 }
